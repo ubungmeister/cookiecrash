@@ -13,8 +13,8 @@ const cookieName = [
 
 function App() {
     const [currentColorArrangement, setCurrentColorArrangement] = useState([''])
-    const [itemBeingDragged, setItemBeingDragged] = useState<Element|null>()
-    const [itemBeingReplaced,setItemBeingReplaced] = useState<Element|null>()
+    const [itemBeingDragged, setItemBeingDragged] = useState<Element>()
+    const [itemBeingReplaced,setItemBeingReplaced] = useState<Element>()
 
 
     const createBoard = () => {
@@ -37,7 +37,6 @@ function App() {
 
             if (columnOfFour.every(item => currentColorArrangement[item] === decidedColor)) {
                 columnOfFour.forEach(item => currentColorArrangement[item] = '')
-                return true
             }
         }
     }
@@ -49,7 +48,6 @@ function App() {
 
             if (columnOfThree.every(item => currentColorArrangement[item] === decidedColor)) {
                 columnOfThree.forEach(item => currentColorArrangement[item] = '')
-                return true
             }
         }
     }
@@ -62,7 +60,6 @@ function App() {
 
             if (rowOffour.every(item => currentColorArrangement[item] === decidedColor)) {
                 rowOffour.forEach(item => currentColorArrangement[item] = '')
-                return true
             }
         }
     }
@@ -75,7 +72,6 @@ function App() {
 
             if (rowOfThree.every(item => currentColorArrangement[item] === decidedColor)) {
                 rowOfThree.forEach(item => currentColorArrangement[item] = '')
-                return true
             }
         }
     }
@@ -103,7 +99,7 @@ function App() {
             checkRowOfThree()
             moveElementBelow()
             setCurrentColorArrangement([...currentColorArrangement])
-        }, 100)
+        }, 500)
         return () => clearInterval(timer)
     }, [checkColumnOfFour, checkRowOfFour, checkColumnOfThree, checkRowOfThree,currentColorArrangement, moveElementBelow])
 
@@ -117,35 +113,11 @@ function App() {
 
         const itemBeingDraggedID = Number(itemBeingDragged?.getAttribute('data-id'))
         const itemBeingReplacedId = Number(itemBeingReplaced?.getAttribute('data-id'))
-        const colorBeingDragged = String(itemBeingDragged?.getAttribute('alt'))
-        const colorBeingReplaced = String(itemBeingReplaced?.getAttribute('alt'))
+        const color = itemBeingDragged?.getAttribute('backgroundColor')
 
-        currentColorArrangement[itemBeingDraggedID] = colorBeingReplaced
-        currentColorArrangement[itemBeingReplacedId] = colorBeingDragged
+        console.log(itemBeingDraggedID)
+        console.log(color)
 
-        const validMoves = [
-            itemBeingDraggedID +1,
-            itemBeingDraggedID -1,
-            itemBeingDraggedID - width,
-            itemBeingDraggedID + width
-        ]
-        const validMove = validMoves.includes(itemBeingReplacedId)
-
-        console.log(validMove)
-
-        const isColumnOfFour =checkColumnOfFour()
-        const isRowOfFour =checkRowOfFour()
-        const isColumnOfThree =checkColumnOfThree()
-        const isRowOfThree = checkRowOfThree()
-
-        if(itemBeingReplacedId && validMove && (isColumnOfFour||isRowOfFour||isColumnOfThree||isRowOfThree)){
-            setItemBeingDragged(null)
-            setItemBeingReplaced(null)
-        } else {
-            currentColorArrangement[itemBeingReplacedId] = colorBeingReplaced
-            currentColorArrangement[itemBeingDraggedID] = colorBeingDragged
-            setCurrentColorArrangement([...currentColorArrangement])
-        }
     }
 
     return (
@@ -159,7 +131,7 @@ function App() {
                             alt = {el}
                             data-id={index}
                             draggable={true}
-                            onDragStart={(el)=>dragStart(el.currentTarget as Element)}
+                            onDragStart={(el)=>dragStart(el.currentTarget)}
                             onDragOver={(e)=>e.preventDefault()}
                             onDragEnter={(e)=>e.preventDefault()}
                             onDragLeave={(e)=>e.preventDefault()}
