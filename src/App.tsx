@@ -8,7 +8,7 @@ import cookie4 from './images/pastry_macaroon_320.png'
 import cookie5 from './images/pastry_starcookie01_320.png'
 import cookie6 from './images/pastry_cupcake_320.png'
 import backgroundCookie from './images/GameTileBG_01@2x.png'
-
+import sc from './images/rem.png'
 
 const width = 8
 
@@ -180,7 +180,10 @@ function App() {
 
     return (
         <Container>
-            <ScoreBoardWrapper>Your score: {score}</ScoreBoardWrapper>
+            <ScorePanel>
+                <ScoreBoardWrapper>Your score: {score}</ScoreBoardWrapper>
+                <RestartButton onClick={()=>setScore(0)}></RestartButton>
+            </ScorePanel>
             <GameWrapper>
                 {currentColorArrangement.map((el, index) => {
                     return (
@@ -214,6 +217,7 @@ const Container = styled.div`
   gap: 30px;
   padding: 60px;
   border-radius: 10px;
+  justify-content: center;
   
   
 `
@@ -229,15 +233,32 @@ const IconWrapper = styled.img`
   height: 60px;
   background-image:url(${backgroundCookie}) ;
 `
+const ScorePanel = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 80px;
+  
+  
+  
+`
+const RestartButton = styled.div`
+  background-image: url(${sc});
+  color: white;
+  background-size: 140px;
+  border-radius: 10px;
+  border: none;
+  width: 130px;
+  height: 50px ;
+  cursor: pointer
+`
 const ScoreBoardWrapper = styled.div`
   background-image: url(${backgroundCookie});
   color: white;
-  background-size: 300px;
+  background-size: 100px;
   border-radius: 10px;
-  margin-top: 100px;
-  margin-left: 100px;
-  margin-bottom: 350px;
-  min-width: 200px;
-  align-items: center;
-  text-align: center;
+  width: 150px;
+  height: 50px ;
+  padding-top: 10px;
+  padding-left: 10px;
+  font-size: 20px;
 `
