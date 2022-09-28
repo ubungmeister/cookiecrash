@@ -136,6 +136,7 @@ function App() {
             itemBeingDraggedID + width
         ]
         const isValid = validMoves.includes(itemBeingReplacedId)
+
         return isValid
     }
 

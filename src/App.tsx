@@ -9,6 +9,7 @@ import cookie5 from './images/pastry_starcookie01_320.png'
 import cookie6 from './images/pastry_cupcake_320.png'
 import backgroundCookie from './images/GameTileBG_01@2x.png'
 import sc from './images/rem.png'
+import {CheckMatches} from "./components/utils";
 
 const width = 8
 
@@ -22,95 +23,27 @@ const cookieName = [
 ]
 
 function App() {
-    const [currentColorArrangement, setCurrentColorArrangement] = useState([''])
+
     const [itemBeingDragged, setItemBeingDragged] = useState<Element | null>()
     const [itemBeingReplaced, setItemBeingReplaced] = useState<Element | null>()
     const[score, setScore]=useState(0)
 
-    //create a new bord 8x8 with random cookies
-    // const createBoard = () => {
-    //     setCurrentColorArrangement(
-    //         [...Array(width * width)].map(
-    //             () => cookieName[Math.floor(Math.random() * cookieName.length)]
-    //         )
-    //     );
-    // } kak prosto peredat znacenie v useState(['']) bez useEffect
+    const itemBeingDraggedID = Number(itemBeingDragged?.getAttribute('data-id'))
+    const itemBeingReplacedId = Number(itemBeingReplaced?.getAttribute('data-id'))
 
-    useEffect(() => {
-        setCurrentColorArrangement(
-            [...Array(width * width)].map(
-                () => cookieName[Math.floor(Math.random() * cookieName.length)]
-            )
-        );
-    }, [])
+    const newArray = [...Array(width * width)].map(
+        () => cookieName[Math.floor(Math.random() * cookieName.length)]
+    )
+    const [currentCookieArrangement, setCurrentColorArrangement] = useState<string[]>(newArray)
 
 
-    const checkColumnOfFour = () => {
-        for (let i = 0; i <= 47; i++) {
-            const columnOfFour = [i, i + width, i + width * 2, i + width * 3]
-            const decidedColor = currentColorArrangement[i]
+    const addState = () => {
+        //CheckMatches => match logic + move elements if they matched, return array + boolean
+        let a = CheckMatches(currentCookieArrangement,width,validMove,cookieName,itemBeingReplaced)
+        setCurrentColorArrangement(a.arr)
+        setScore(score + a.score)
+        return a.result //use it to drag elements
 
-            if (!validMove()) continue
-            if (columnOfFour.every(item => currentColorArrangement[item] === decidedColor)) {
-                columnOfFour.forEach(item => currentColorArrangement[item] = '')
-                return true
-            }
-
-        }
-    }
-    const checkRowOfFour = () => {
-        for (let i = 0; i < 64; i++) {
-            const rowOffour = [i, i + 1, i + 2, i + 3]
-            const decidedColor = currentColorArrangement[i]
-            //instead of using indexes of items, we don't need las 3 row to check
-            if (i % 8 >= 5) continue
-
-            if (!validMove()) continue
-            if (rowOffour.every(item => currentColorArrangement[item] === decidedColor)) {
-                rowOffour.forEach(item => currentColorArrangement[item] = '')
-
-                return true
-            }
-        }
-    }
-    const checkColumnOfThree = () => {
-        for (let i = 0; i <= 47; i++) {
-            const columnOfThree = [i, i + width, i + width * 2]
-            const decidedColor = currentColorArrangement[i]
-            if (!validMove()) continue
-            if (columnOfThree.every(item => currentColorArrangement[item] === decidedColor)) {
-                columnOfThree.forEach(item => currentColorArrangement[item] = '')
-                return true
-            }
-        }
-    }
-
-    const checkRowOfThree = () => {
-        for (let i = 0; i < 64; i++) {
-            const rowOfThree = [i, i + 1, i + 2]
-            const decidedColor = currentColorArrangement[i]
-            //instead of using indexes of items, we don't need las 2 row to check
-            if (i % 8 >= 6) continue
-
-            if (!validMove()) continue
-            if (rowOfThree.every(item => currentColorArrangement[item] === decidedColor)) {
-                rowOfThree.forEach(item => currentColorArrangement[item] = '')
-                return true
-            }
-        }
-    }
-    const moveElementBelow = () => {
-        for (let i = 0; i <= 55; i++) {
-            const firstRow = [0, 1, 2, 3, 4, 5, 6, 7]
-            if (firstRow.includes(i) && currentColorArrangement[i] === '') {
-                currentColorArrangement[i] = cookieName[Math.floor(Math.random() * cookieName.length)]
-            }
-
-            if (currentColorArrangement[i + width] === '') {
-                currentColorArrangement[i + width] = currentColorArrangement[i]
-                currentColorArrangement[i] = ''
-            }
-        }
     }
 
     const dragStart = (el: Element) => {
@@ -120,8 +53,6 @@ function App() {
         setItemBeingReplaced(el)
     }
 
-    const itemBeingDraggedID = Number(itemBeingDragged?.getAttribute('data-id'))
-    const itemBeingReplacedId = Number(itemBeingReplaced?.getAttribute('data-id'))
 
     const validMove = () => {
         const validMoves = [
@@ -139,44 +70,31 @@ function App() {
         const colorBeingDragged = String(itemBeingDragged?.getAttribute('src'))
         const colorBeingReplaced = String(itemBeingReplaced?.getAttribute('src'))
 
-        currentColorArrangement[itemBeingReplacedId] = colorBeingDragged
-        currentColorArrangement[itemBeingDraggedID] = colorBeingReplaced
+        currentCookieArrangement[itemBeingReplacedId] = colorBeingDragged
+        currentCookieArrangement[itemBeingDraggedID] = colorBeingReplaced
+
+        const isColumnOrRowMatch = addState()
 
 
-        const isColumnOfFour = checkColumnOfFour()
-        const isRowOfFour = checkRowOfFour()
-        const isColumnOfThree = checkColumnOfThree()
-        const isRowOfThree = checkRowOfThree()
-
-
-        if (itemBeingReplacedId && (isColumnOfFour || isRowOfFour || isColumnOfThree|| isRowOfThree)) {
+        if (itemBeingReplacedId && (isColumnOrRowMatch)) {
             setItemBeingDragged(null)
             setItemBeingReplaced(null)
 
-            // score counter
-            if(isColumnOfFour || isRowOfFour ){
-                setScore((s)=>s+4)
-            }else {setScore((s)=>s+3)}
         }
         else {
-            currentColorArrangement[itemBeingReplacedId] = colorBeingReplaced
-            currentColorArrangement[itemBeingDraggedID] = colorBeingDragged
-            setCurrentColorArrangement([...currentColorArrangement])
+            currentCookieArrangement[itemBeingReplacedId] = colorBeingReplaced
+            currentCookieArrangement[itemBeingDraggedID] = colorBeingDragged
+            setCurrentColorArrangement([...currentCookieArrangement])
         }
     }
     useEffect(() => {
-        checkColumnOfFour()
-        checkRowOfFour()
-        checkColumnOfThree()
-        checkRowOfThree()
-        moveElementBelow()
-
+        addState()
         const timer = setInterval(() => {
-            setCurrentColorArrangement([...currentColorArrangement])
-        }, 100)
+            setCurrentColorArrangement([...currentCookieArrangement])
+        }, 140)
         return () => clearInterval(timer)
 
-    }, [currentColorArrangement])
+    }, [currentCookieArrangement])
 
     return (
         <Container>
@@ -185,7 +103,7 @@ function App() {
                 <RestartButton onClick={()=>setScore(0)}></RestartButton>
             </ScorePanel>
             <GameWrapper>
-                {currentColorArrangement.map((el, index) => {
+                {currentCookieArrangement.map((el, index) => {
                     return (
                         <IconWrapper
                             key={index}
