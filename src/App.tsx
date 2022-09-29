@@ -8,8 +8,12 @@ import cookie4 from './images/pastry_macaroon_320.png'
 import cookie5 from './images/pastry_starcookie01_320.png'
 import cookie6 from './images/pastry_cupcake_320.png'
 import backgroundCookie from './images/GameTileBG_01@2x.png'
-import sc from './images/rem.png'
+import play from './images/play.png'
+import replay from './images/replay.png'
 import {CheckMatches} from "./components/utils";
+import {Timer} from './components/Timer'
+import score from './images/score.png'
+import button from './images/but.png'
 
 const width = 8
 
@@ -22,11 +26,13 @@ const cookieName = [
     cookie6
 ]
 
+
 function App() {
 
     const [itemBeingDragged, setItemBeingDragged] = useState<Element | null>()
     const [itemBeingReplaced, setItemBeingReplaced] = useState<Element | null>()
     const[score, setScore]=useState(0)
+    const [startGame,setStartGame]=useState(false)
 
     const itemBeingDraggedID = Number(itemBeingDragged?.getAttribute('data-id'))
     const itemBeingReplacedId = Number(itemBeingReplaced?.getAttribute('data-id'))
@@ -76,10 +82,9 @@ function App() {
         const isColumnOrRowMatch = addState()
 
 
-        if (itemBeingReplacedId && (isColumnOrRowMatch)) {
+        if (itemBeingReplacedId && (isColumnOrRowMatch) && startGame) {
             setItemBeingDragged(null)
             setItemBeingReplaced(null)
-
         }
         else {
             currentCookieArrangement[itemBeingReplacedId] = colorBeingReplaced
@@ -96,11 +101,20 @@ function App() {
 
     }, [currentCookieArrangement])
 
+
+    const RestartHandler =()=>{
+        setScore(0)
+        setStartGame(!startGame)
+    }
+
     return (
         <Container>
+
             <ScorePanel>
-                <ScoreBoardWrapper>Your score: {score}</ScoreBoardWrapper>
-                <RestartButton onClick={()=>setScore(0)}></RestartButton>
+                {startGame ? <Timer endtGame={setStartGame} score ={score}/>:<ScoreBoardWrapper>Time</ScoreBoardWrapper>}
+                <ScoreBoardWrapper>Score:{score}</ScoreBoardWrapper>
+                {!startGame ?<RestartButton onClick={() => setStartGame(!startGame)}>Play</RestartButton>
+                    : <RestartButton   onClick={RestartHandler}>Restart</RestartButton>}
             </ScorePanel>
             <GameWrapper>
                 {currentCookieArrangement.map((el, index) => {
@@ -136,8 +150,7 @@ const Container = styled.div`
   padding: 60px;
   border-radius: 10px;
   justify-content: center;
-  
-  
+
 `
 const GameWrapper = styled.div`
   width: 480px;
@@ -150,33 +163,40 @@ const IconWrapper = styled.img`
   width: 60px;
   height: 60px;
   background-image:url(${backgroundCookie}) ;
+  cursor: pointer
 `
 const ScorePanel = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 80px;
-  
-  
+  margin-top: 100px;
+  gap: 15px;
+  opacity: 0.9;
   
 `
 const RestartButton = styled.div`
-  background-image: url(${sc});
+  background-image: url(${button});
+  padding: 10px;
+  font-size: 22px;
+  text-align: center;
   color: white;
-  background-size: 140px;
+  background-size: 180px;
   border-radius: 10px;
   border: none;
-  width: 130px;
-  height: 50px ;
-  cursor: pointer
+  width: 180px;
+  height: 54px ;
+  cursor: pointer;
+  
 `
 const ScoreBoardWrapper = styled.div`
-  background-image: url(${backgroundCookie});
+  background-image: url(${button});
+  padding: 10px;
+  font-size: 22px;
+  text-align: center;
   color: white;
-  background-size: 100px;
+  background-size: 180px;
   border-radius: 10px;
-  width: 150px;
-  height: 50px ;
-  padding-top: 10px;
-  padding-left: 10px;
-  font-size: 20px;
+  width: 180px;
+  height: 54px ;
+  cursor: pointer;
+  
 `

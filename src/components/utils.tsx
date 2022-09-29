@@ -1,8 +1,11 @@
+
+
 export const CheckMatches = (currentCookieArrangement: string[],
                              width: number,
                              validMove: () => boolean,
                              cookieName: string[],
-                             itemBeingReplaced?: Element | null): { arr: string[], result: boolean, score: number } => {
+                             itemBeingReplaced?: Element | null,
+                             ): { arr: string[], result: boolean, score: number } => {
 
 
 
@@ -76,4 +79,3 @@ export const CheckMatches = (currentCookieArrangement: string[],
     }
     return {arr: currentCookieArrangement, result: counter > 0, score: score}
 }
-
