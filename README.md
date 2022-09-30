@@ -1,6 +1,8 @@
 ## An old school cookie crash game 
 
-<img width="720" alt="sw" src="https://user-images.githubusercontent.com/106166590/192148430-eba8336a-a0e6-4727-9d0b-d3f2d18420ca.png">
+link: https://cookie-4fu1.onrender.com/
+
+<img width="802" alt="Screenshot_1" src="https://user-images.githubusercontent.com/106166590/193309568-428188d9-88d9-4992-8d7d-582a5d57e25a.png">
 
 
 
