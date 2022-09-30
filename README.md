@@ -2,7 +2,8 @@
 
 link: https://cookie-4fu1.onrender.com/
 
-<img width="802" alt="Screenshot_1" src="https://user-images.githubusercontent.com/106166590/193309568-428188d9-88d9-4992-8d7d-582a5d57e25a.png">
+<img width="852" alt="Screenshot_1" src="https://user-images.githubusercontent.com/106166590/193329177-34e6ad14-2342-438c-a887-76b52b8afc67.png">
+
 
 
 
