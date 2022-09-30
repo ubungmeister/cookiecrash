@@ -1,4 +1,4 @@
-## An old school cookie crash game 
+## Old school cookie crash game 🍪🧁🍩
 
 link: https://cookie-4fu1.onrender.com/
 
