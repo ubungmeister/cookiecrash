@@ -12,6 +12,7 @@ import {CheckMatches} from "./components/utils";
 import {Timer} from './components/Timer'
 import button from './images/but.png'
 import best from './images/bestscore.png'
+import {motion} from "framer-motion";
 
 const width = 8
 
@@ -33,31 +34,27 @@ function App() {
     const [startGame, setStartGame] = useState(false)
     const [bestScore, setBestScore] = useState(0)
 
-    const itemBeingDraggedID = Number(itemBeingDragged?.getAttribute('data-id'))
-    const itemBeingReplacedId = Number(itemBeingReplaced?.getAttribute('data-id'))
-
     const newArray = [...Array(width * width)].map(
         () => cookieName[Math.floor(Math.random() * cookieName.length)]
     )
     const [currentCookieArrangement, setCurrentColorArrangement] = useState<string[]>(newArray)
 
+    const itemBeingDraggedID = Number(itemBeingDragged?.getAttribute('data-id'))
+    const itemBeingReplacedId = Number(itemBeingReplaced?.getAttribute('data-id'))
+
+    const RestartHandler = () => {
+        setScore(0)
+        setStartGame(!startGame)
+    }
 
     const addState = () => {
         //CheckMatches => match logic + move elements if they matched, return array + boolean
-        let a = CheckMatches(currentCookieArrangement, width, validMove, cookieName, itemBeingReplaced)
+        let a = CheckMatches(currentCookieArrangement, width, validMove, cookieName, itemBeingReplaced,backgroundCookie)
         setCurrentColorArrangement(a.arr)
         setScore(score + a.score)
         return a.result //use it to drag elements
 
     }
-
-    const dragStart = (el: Element) => {
-        setItemBeingDragged(el)
-    }
-    const dragDrop = (el: Element) => {
-        setItemBeingReplaced(el)
-    }
-
 
     const validMove = () => {
         const validMoves = [
@@ -69,6 +66,12 @@ function App() {
         return validMoves.includes(itemBeingReplacedId)
     }
 
+    const dragStart = (el: Element) => {
+        setItemBeingDragged(el)
+    }
+    const dragDrop = (el: Element) => {
+        setItemBeingReplaced(el)
+    }
 
     const dragEnd = () => {
 
@@ -100,12 +103,6 @@ function App() {
     }, [currentCookieArrangement])
 
 
-    const RestartHandler = () => {
-        setScore(0)
-        setStartGame(!startGame)
-    }
-
-
     useEffect(() => {
         const bestScore = localStorage.getItem('bestScore')
         if (bestScore) {
@@ -113,13 +110,14 @@ function App() {
             setBestScore(newValue)
         }
     }, [])
-    console.log(startGame)
+
+
     useEffect(() => {
         if (score > bestScore) {
             setBestScore(score)
             localStorage.setItem('bestScore', JSON.stringify(score))
         }
-        // console.log(localStorage.setItem('bestScore',JSON.stringify(bestScore) ))
+
     }, [startGame])
 
 
@@ -128,11 +126,13 @@ function App() {
 
             <ScorePanel>
                 <BestScoreWrapper>Best Score: {bestScore}</BestScoreWrapper>
-                {startGame ? <Timer endGame={setStartGame} score={score}/> :
-                    <ScoreBoardWrapper>Time</ScoreBoardWrapper>}
-                <ScoreBoardWrapper>Score:{score}</ScoreBoardWrapper>
-                {!startGame ? <RestartButton onClick={() => setStartGame(!startGame)}>Play</RestartButton>
-                    : <RestartButton onClick={RestartHandler}>Restart</RestartButton>}
+                {startGame
+                    ? <Timer startGame={setStartGame} score={score}/>
+                    : <ScoreBoardWrapper>0:45</ScoreBoardWrapper>}
+                <ScoreBoardWrapper>Score: {score}</ScoreBoardWrapper>
+                {!startGame
+                    ? <ScoreBoardWrapper whileHover={{scale: 1.1}} whileTap={{scale: 0.9}} onClick={RestartHandler}>Play</ScoreBoardWrapper>
+                    : <ScoreBoardWrapper whileHover={{scale: 1.1}} whileTap={{scale: 0.9}} onClick={RestartHandler}>Restart</ScoreBoardWrapper>}
             </ScorePanel>
             <GameWrapper>
                 {currentCookieArrangement.map((el, index) => {
@@ -188,27 +188,9 @@ const ScorePanel = styled.div`
   flex-direction: column;
   margin-top: 75px;
   gap: 12px;
-
-
-
+  
 `
-const RestartButton = styled.div`
-  background-image: url(${button});
-  padding: 10px;
-  font-size: 22px;
-  text-align: center;
-  color: white;
-  background-size: 180px;
-  border-radius: 10px;
-  border: none;
-  width: 180px;
-  height: 54px;
-  cursor: pointer;
-  margin-left: 55px;
-  opacity: 0.9;
-
-`
-const ScoreBoardWrapper = styled.div`
+const ScoreBoardWrapper = styled(motion.div)`
   background-image: url(${button});
   margin-left: 55px;
   padding: 10px;

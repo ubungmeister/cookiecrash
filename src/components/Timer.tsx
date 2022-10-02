@@ -3,7 +3,7 @@ import styled from "styled-components";
 import button from "../images/but.png";
 
 export type TimerType ={
-    endGame: (end:boolean)=>void
+    startGame: (end:boolean)=>void
     score:number
 }
 export interface TimeColorProps{
@@ -12,10 +12,9 @@ export interface TimeColorProps{
 export const Timer = (props:TimerType)=>{
 
 
-    const [time, setTime] =useState(5)
+    const [time, setTime] =useState(45)
 
     useEffect(() => {
-        console.log('s')
         if(time>0){
             const timer = setInterval(() => {
                 setTime(time - 1)
@@ -24,14 +23,13 @@ export const Timer = (props:TimerType)=>{
         },[time]
     )
     if (time === 0){
-        props.endGame(false)
+        props.startGame(false)
     }
     return(
         <div>
-        {time
-            ?<TimeWrapper time={time}>{time}</TimeWrapper>
-            : time <=5? <TimeWrapper time={time}>Time is over</TimeWrapper>
-            : <TimeWrapper time={time}>Time is over</TimeWrapper>}
+            {time >1
+                ? <TimeWrapper time={time}>0:{time}</TimeWrapper>
+                : <TimeWrapper time={time}>Time is over</TimeWrapper>}
         </div>
     )
 }

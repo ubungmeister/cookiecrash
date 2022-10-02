@@ -1,11 +1,11 @@
 
-
 export const CheckMatches = (currentCookieArrangement: string[],
                              width: number,
                              validMove: () => boolean,
                              cookieName: string[],
                              itemBeingReplaced?: Element | null,
-                             ): { arr: string[], result: boolean, score: number } => {
+                             backgroundCookie?:string
+                             ): { arr: string[], result: boolean, score: number} => {
 
 
 
@@ -19,9 +19,10 @@ export const CheckMatches = (currentCookieArrangement: string[],
 
         if (!validMove()) continue //tell us if the dragged item was ok, allowed step 1 left/right/top/down
         if (columnOfFour.every(item => currentCookieArrangement[item] === decidedCookie)) {
-            columnOfFour.forEach(item => currentCookieArrangement[item] = '')
+            columnOfFour.forEach(item => currentCookieArrangement[item] = backgroundCookie ?? '')
             counter++
-
+            //backgroundCookie ?? '' help to solve TS2322 Type 'string | undefined' is not assignable to type 'string'
+            //basically if backgroundCookie is null chose ''
         }
 
     }
@@ -33,7 +34,7 @@ export const CheckMatches = (currentCookieArrangement: string[],
 
         if (!validMove()) continue
         if (rowOfFour.every(item => currentCookieArrangement[item] === decidedCookie)) {
-            rowOfFour.forEach(item => currentCookieArrangement[item] = '')
+            rowOfFour.forEach(item => currentCookieArrangement[item] = backgroundCookie ?? '')
             counter++
         }
     }
@@ -42,7 +43,7 @@ export const CheckMatches = (currentCookieArrangement: string[],
         const decidedCookie = currentCookieArrangement[i]
         if (!validMove()) continue
         if (columnOfThree.every(item => currentCookieArrangement[item] === decidedCookie)) {
-            columnOfThree.forEach(item => currentCookieArrangement[item] = '')
+            columnOfThree.forEach(item => currentCookieArrangement[item] = backgroundCookie ?? '')
             counter++
 
         }
@@ -55,7 +56,7 @@ export const CheckMatches = (currentCookieArrangement: string[],
 
         if (!validMove()) continue
         if (rowOfThree.every(item => currentCookieArrangement[item] === decidedCookie)) {
-            rowOfThree.forEach(item => currentCookieArrangement[item] = '')
+            rowOfThree.forEach(item => currentCookieArrangement[item] = backgroundCookie ?? '')
             counter++
         }
     }
@@ -63,15 +64,15 @@ export const CheckMatches = (currentCookieArrangement: string[],
     //move matched elements and replace them new one
     for (let i = 0; i <= 55; i++) {
         const firstRow = [0, 1, 2, 3, 4, 5, 6, 7]
-        if (firstRow.includes(i) && currentCookieArrangement[i] === '') {
+        if (firstRow.includes(i) && currentCookieArrangement[i] === backgroundCookie) {
             currentCookieArrangement[i] = cookieName[Math.floor(Math.random() * cookieName.length)]
             score++ //count how many times was the element in the first line was ==='', which can tell us how many score we got.
         }
 
-        if (currentCookieArrangement[i + width] === '') {
+        if (currentCookieArrangement[i + width] === backgroundCookie ?? '') {
 
             currentCookieArrangement[i + width] = currentCookieArrangement[i]
-            currentCookieArrangement[i] = ''
+            currentCookieArrangement[i] = backgroundCookie ?? ''
         }
     }
     if (itemBeingReplaced !== null) {
