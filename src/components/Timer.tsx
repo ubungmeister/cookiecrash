@@ -38,9 +38,9 @@ const TimeWrapper= styled.div<TimeColorProps>`
   background-image: url(${button});
   padding: 10px;
   margin-left: 55px;
-  font-size: 22px;
+  font-size: ${props=>props.time === 45 ? '23px':'22px'};
   text-align: center;
-  color: ${props=>props.time > 5 ? 'white' :'red'};
+  color: ${props=>props.time === 45 ? 'yellow' : props.time > 5 ? 'white': 'red'};
   background-size: 180px;
   border-radius: 10px;
   border: none;

@@ -13,6 +13,7 @@ import {Timer} from './components/Timer'
 import button from './images/but.png'
 import best from './images/bestscore.png'
 import {motion} from "framer-motion";
+import Confetti from "react-confetti";
 
 const width = 8
 
@@ -123,8 +124,8 @@ function App() {
 
     return (
         <Container>
-
             <ScorePanel>
+                {startGame? '':score===bestScore?<Confetti numberOfPieces={300} />:''}
                 <BestScoreWrapper>Best Score: {bestScore}</BestScoreWrapper>
                 {startGame
                     ? <Timer startGame={setStartGame} score={score}/>
