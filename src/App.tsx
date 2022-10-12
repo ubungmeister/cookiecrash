@@ -14,6 +14,8 @@ import button from './images/but.png'
 import best from './images/bestscore.png'
 import {motion} from "framer-motion";
 import Confetti from "react-confetti";
+import useLocalStorage from "use-local-storage";
+
 
 const width = 8
 
@@ -34,11 +36,12 @@ function App() {
     const [score, setScore] = useState(0)
     const [startGame, setStartGame] = useState(false)
     const [bestScore, setBestScore] = useState(0)
+    const [item,setItem] = useLocalStorage('bestScore', 0)
 
     const newArray = [...Array(width * width)].map(
         () => cookieName[Math.floor(Math.random() * cookieName.length)]
     )
-    const [currentCookieArrangement, setCurrentColorArrangement] = useState<string[]>(newArray)
+    const [currentCookieArrangement, setCurrentCookieArrangement] = useState<string[]>(newArray)
 
     const itemBeingDraggedID = Number(itemBeingDragged?.getAttribute('data-id'))
     const itemBeingReplacedId = Number(itemBeingReplaced?.getAttribute('data-id'))
@@ -50,13 +53,19 @@ function App() {
 
     const addState = () => {
         //CheckMatches => match logic + move elements if they matched, return array + boolean
-        let a = CheckMatches(currentCookieArrangement, width, validMove, cookieName, itemBeingReplaced,backgroundCookie)
-        setCurrentColorArrangement(a.arr)
+        let a = CheckMatches(
+            currentCookieArrangement,
+            width,
+            validMove,
+            cookieName,
+            itemBeingReplaced,
+            backgroundCookie)
+        setCurrentCookieArrangement(a.arr)
         setScore(score + a.score)
         return a.result //use it to drag elements
 
     }
-
+    //return true/false if move is valid
     const validMove = () => {
         const validMoves = [
             itemBeingDraggedID + 1,
@@ -91,13 +100,13 @@ function App() {
         } else {
             currentCookieArrangement[itemBeingReplacedId] = colorBeingReplaced
             currentCookieArrangement[itemBeingDraggedID] = colorBeingDragged
-            setCurrentColorArrangement([...currentCookieArrangement])
+            setCurrentCookieArrangement([...currentCookieArrangement])
         }
     }
     useEffect(() => {
         addState()
         const timer = setInterval(() => {
-            setCurrentColorArrangement([...currentCookieArrangement])
+            setCurrentCookieArrangement([...currentCookieArrangement])
         }, 140)
         return () => clearInterval(timer)
 
@@ -105,20 +114,10 @@ function App() {
 
 
     useEffect(() => {
-        const bestScore = localStorage.getItem('bestScore')
-        if (bestScore) {
-            let newValue = JSON.parse(bestScore)
-            setBestScore(newValue)
-        }
-    }, [])
-
-
-    useEffect(() => {
         if (score > bestScore) {
             setBestScore(score)
-            localStorage.setItem('bestScore', JSON.stringify(score))
+            setItem(score)
         }
-
     }, [startGame])
 
 
@@ -126,7 +125,7 @@ function App() {
         <Container>
             <ScorePanel>
                 {startGame? '':score===bestScore?<Confetti numberOfPieces={300} />:''}
-                <BestScoreWrapper>Best Score: {bestScore}</BestScoreWrapper>
+                <BestScoreWrapper>Best Score: {item}</BestScoreWrapper>
                 {startGame
                     ? <Timer startGame={setStartGame} score={score}/>
                     : <ScoreBoardWrapper>0:45</ScoreBoardWrapper>}

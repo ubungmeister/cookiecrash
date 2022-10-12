@@ -1,19 +1,18 @@
-
 export const CheckMatches = (currentCookieArrangement: string[],
                              width: number,
                              validMove: () => boolean,
                              cookieName: string[],
                              itemBeingReplaced?: Element | null,
-                             backgroundCookie?:string
-                             ): { arr: string[], result: boolean, score: number} => {
-
+                             backgroundCookie?: string
+): { arr: string[], result: boolean, score: number } => {
 
 
     let score = 0 //return score of the matched elements, include what we matched and what matched accidentally  by moving elements down
     let counter = 0 // return whether there was a match = counter >1 or <1 if there was no match. We use it in App to move elements
+    let rowToCheck = width - 2 //we don't need to check last 2 row
 
     //check elements if there was a match, vertically and horizontally
-    for (let i = 0; i <= 47; i++) {
+    for (let i = 0; i <= (rowToCheck * width - 1); i++) {
         const columnOfFour = [i, i + width, i + width * 2, i + width * 3] // check 4 elements vertically
         const decidedCookie = currentCookieArrangement[i]
 
@@ -26,10 +25,10 @@ export const CheckMatches = (currentCookieArrangement: string[],
         }
 
     }
-    for (let i = 0; i < 64; i++) {
+    for (let i = 0; i < width ** 2; i++) {
         const rowOfFour = [i, i + 1, i + 2, i + 3] // check 4 elements horizontally
         const decidedCookie = currentCookieArrangement[i]
-        //instead of using indexes of items, we don't need las 3 row to check
+        //instead of using indexes of items, we don't need last 3 row to check
         if (i % 8 >= 5) continue
 
         if (!validMove()) continue
@@ -38,7 +37,7 @@ export const CheckMatches = (currentCookieArrangement: string[],
             counter++
         }
     }
-    for (let i = 0; i <= 47; i++) {
+    for (let i = 0; i <= (rowToCheck * width - 1); i++) {
         const columnOfThree = [i, i + width, i + width * 2] // check 3 elements vertically
         const decidedCookie = currentCookieArrangement[i]
         if (!validMove()) continue
@@ -48,7 +47,7 @@ export const CheckMatches = (currentCookieArrangement: string[],
 
         }
     }
-    for (let i = 0; i < 64; i++) {
+    for (let i = 0; i < width ** 2; i++) {
         const rowOfThree = [i, i + 1, i + 2] // check 3 elements horizontally
         const decidedCookie = currentCookieArrangement[i]
         //instead of using indexes of items, we don't need last 2 row to check
@@ -62,7 +61,7 @@ export const CheckMatches = (currentCookieArrangement: string[],
     }
 
     //move matched elements and replace them new one
-    for (let i = 0; i <= 55; i++) {
+    for (let i = 0; i <= width ** 2; i++) {
         const firstRow = [0, 1, 2, 3, 4, 5, 6, 7]
         if (firstRow.includes(i) && currentCookieArrangement[i] === backgroundCookie) {
             currentCookieArrangement[i] = cookieName[Math.floor(Math.random() * cookieName.length)]

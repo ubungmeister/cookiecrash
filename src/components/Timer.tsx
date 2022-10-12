@@ -12,7 +12,7 @@ export interface TimeColorProps{
 export const Timer = (props:TimerType)=>{
 
 
-    const [time, setTime] =useState(45)
+    const [time, setTime] =useState(5)
 
     useEffect(() => {
         if(time>0){

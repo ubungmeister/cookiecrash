@@ -5880,7 +5880,7 @@ jest@^27.4.3:
 
 js-confetti@^0.10.2:
   version "0.10.2"
-  resolved "https://registry.yarnpkg.com/js-confetti/-/js-confetti-0.10.2.tgz#f30aab309735284d5694845f24a6a3a3d4221984"
+  resolved "https://registry.npmjs.org/js-confetti/-/js-confetti-0.10.2.tgz"
   integrity sha512-/ppeGV3sOJ/DDH43ABbqe8V/9Fx5TUNkywPlXr9YK9OK6++olMtRP/yRdXftl49iTIAAdoNopkgAy3SLOgSE+A==
 
 js-sdsl@^4.1.4:
@@ -8742,6 +8742,11 @@ url-parse@^1.5.3:
   dependencies:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
+
+use-local-storage@^2.3.6:
+  version "2.3.6"
+  resolved "https://registry.npmjs.org/use-local-storage/-/use-local-storage-2.3.6.tgz"
+  integrity sha512-OJQHWYbH2M5mMaSY6uYIbfzOm7eVz1fBYFw1wqQurCR2+gQb+FjVt0KzzDAsgTOSEUNVAbaiJ0I4WcNjRn7u5w==
 
 util-deprecate@^1.0.1, util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   version "1.0.2"
