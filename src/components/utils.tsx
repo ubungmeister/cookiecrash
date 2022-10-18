@@ -9,7 +9,7 @@ export const CheckMatches = (currentCookieArrangement: string[],
 
     let score = 0 //return score of the matched elements, include what we matched and what matched accidentally  by moving elements down
     let counter = 0 // return whether there was a match = counter >1 or <1 if there was no match. We use it in App to move elements
-    let rowToCheck = width - 2 //we don't need to check last 2 row
+    const rowToCheck = width - 2 //we don't need to check last 2 row
 
     //check elements if there was a match, vertically and horizontally
     for (let i = 0; i <= (rowToCheck * width - 1); i++) {

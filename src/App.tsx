@@ -17,6 +17,7 @@ import Confetti from "react-confetti";
 import useLocalStorage from "use-local-storage";
 
 
+
 const width = 8
 
 const cookieName = [
@@ -39,8 +40,7 @@ function App() {
     const [item,setItem] = useLocalStorage('bestScore', 0)
 
     const newArray = [...Array(width * width)].map(
-        () => cookieName[Math.floor(Math.random() * cookieName.length)]
-    )
+        () => cookieName[Math.floor(Math.random() * cookieName.length)])
     const [currentCookieArrangement, setCurrentCookieArrangement] = useState<string[]>(newArray)
 
     const itemBeingDraggedID = Number(itemBeingDragged?.getAttribute('data-id'))
@@ -53,16 +53,16 @@ function App() {
 
     const addState = () => {
         //CheckMatches => match logic + move elements if they matched, return array + boolean
-        let a = CheckMatches(
+        const state = CheckMatches(
             currentCookieArrangement,
             width,
             validMove,
             cookieName,
             itemBeingReplaced,
             backgroundCookie)
-        setCurrentCookieArrangement(a.arr)
-        setScore(score + a.score)
-        return a.result //use it to drag elements
+        setCurrentCookieArrangement(state.arr)
+        setScore(score + state.score)
+        return state.result //use it to drag elements
 
     }
     //return true/false if move is valid
@@ -120,19 +120,19 @@ function App() {
         }
     }, [startGame])
 
+    const scoreButton = startGame? 'Play': 'Restart'
+
 
     return (
         <Container>
             <ScorePanel>
-                {startGame? '':score===bestScore?<Confetti numberOfPieces={300} />:''}
+                {(startGame && score===bestScore) && <Confetti numberOfPieces={300} />}
                 <BestScoreWrapper>Best Score: {item}</BestScoreWrapper>
                 {startGame
                     ? <Timer startGame={setStartGame} score={score}/>
                     : <ScoreBoardWrapper>0:45</ScoreBoardWrapper>}
                 <ScoreBoardWrapper>Score: {score}</ScoreBoardWrapper>
-                {!startGame
-                    ? <ScoreBoardWrapper whileHover={{scale: 1.1}} whileTap={{scale: 0.9}} onClick={RestartHandler}>Play</ScoreBoardWrapper>
-                    : <ScoreBoardWrapper whileHover={{scale: 1.1}} whileTap={{scale: 0.9}} onClick={RestartHandler}>Restart</ScoreBoardWrapper>}
+                <ScoreBoardWrapper whileHover={{scale: 1.1}} whileTap={{scale: 0.9}} onClick={RestartHandler}>{scoreButton}</ScoreBoardWrapper>
             </ScorePanel>
             <GameWrapper>
                 {currentCookieArrangement.map((el, index) => {
@@ -175,7 +175,6 @@ const GameWrapper = styled.div`
   height: 480px;
   display: flex;
   flex-wrap: wrap;
-
 `
 const IconWrapper = styled.img`
   width: 60px;
@@ -188,7 +187,6 @@ const ScorePanel = styled.div`
   flex-direction: column;
   margin-top: 75px;
   gap: 12px;
-  
 `
 const ScoreBoardWrapper = styled(motion.div)`
   background-image: url(${button});
@@ -203,7 +201,6 @@ const ScoreBoardWrapper = styled(motion.div)`
   height: 54px;
   cursor: pointer;
   opacity: 0.9;
-
 `
 const BestScoreWrapper = styled.div`
   background-image: url(${best});
